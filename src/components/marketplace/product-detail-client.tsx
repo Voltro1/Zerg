@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Heart, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Heart, ShoppingCart, ArrowLeft, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -63,6 +63,24 @@ export function ProductDetailClient({
       toast.success(result.data.favorited ? "Added to wishlist" : "Removed from wishlist");
     } else if (!result.success) {
       toast.error(result.error);
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: product.description,
+          url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Product link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -129,11 +147,36 @@ export function ProductDetailClient({
           )}
 
           <div className="mt-6 flex gap-3">
-            <Button size="lg" className="flex-1" onClick={handlePurchase} loading={purchasing}>
-              <ShoppingCart className="size-4" /> Purchase
+            <Button
+              size="lg"
+              className="flex-1"
+              onClick={handlePurchase}
+              loading={purchasing}
+            >
+              <ShoppingCart className="size-4" />
+              Purchase
             </Button>
-            <Button size="lg" variant="outline" onClick={handleFavorite} aria-label="Add to wishlist">
-              <Heart className={`size-4 ${favorited ? "fill-primary text-primary" : ""}`} />
+
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleFavorite}
+              aria-label="Add to wishlist"
+            >
+              <Heart
+                className={`size-4 ${
+                  favorited ? "fill-primary text-primary" : ""
+                }`}
+              />
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleShare}
+              aria-label="Share product"
+            >
+              <Share2 className="size-4" />
             </Button>
           </div>
         </div>
