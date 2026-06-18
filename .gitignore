@@ -31,7 +31,7 @@ yarn-error.log*
 # sensitive files
 .env
 .env.local
-supabase/
+schema.sql
 
 # vercel
 .vercel
